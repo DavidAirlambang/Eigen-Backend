@@ -1,0 +1,313 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Eigen API",
+    "version": "1.0.0",
+    "description": "API documentation for Eigen's Backend Test"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/api/v1/books": {
+      "get": {
+        "tags": ["Book"],
+        "summary": "Get all books",
+        "description": "Retrieve all books with stock greater than 0.",
+        "responses": {
+          "200": {
+            "description": "A list of books.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Book"],
+        "summary": "Create a new book",
+        "description": "Add a new book to the library.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Book"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created book.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/books/{code}": {
+      "patch": {
+        "tags": ["Book"],
+        "summary": "Update a book",
+        "description": "Update details of an existing book.",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "description": "The code of the book to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateBook"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The book has been updated successfully."
+          },
+          "400": {
+            "description": "Bad request. Possible reason: Book not found."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/members": {
+      "get": {
+        "tags": ["Member"],
+        "summary": "Get all members",
+        "description": "Retrieve all members with loan count.",
+        "responses": {
+          "200": {
+            "description": "A list of members.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Member"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Member"],
+        "summary": "Create a new member",
+        "description": "Add a new member to the system.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewMember"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created member.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Member"],
+        "summary": "Update a member",
+        "description": "Update details of an existing member.",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "description": "The code of the member to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMember"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The member has been updated successfully."
+          },
+          "400": {
+            "description": "Bad request. Possible reason: Member not found."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/loans/borrow": {
+      "post": {
+        "tags": ["Loan"],
+        "summary": "Borrow a book",
+        "description": "Borrow a book for a member.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BorrowRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The book has been borrowed successfully."
+          },
+          "400": {
+            "description": "Bad request. Possible reasons: Member has reached maximum borrow limit, Book not available."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/loans/return": {
+      "post": {
+        "tags": ["Loan"],
+        "summary": "Return a book",
+        "description": "Return a borrowed book by a member.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReturnRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The book has been returned successfully."
+          },
+          "400": {
+            "description": "Bad request. Possible reason: Book not found in member's loan."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Book": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "stock": {
+            "type": "integer"
+          }
+        }
+      },
+      "updateBook": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "stock": {
+            "type": "integer"
+          }
+        }
+      },
+      "Member": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Loan": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "memberCode": {
+            "type": "string"
+          },
+          "bookCode": {
+            "type": "string"
+          },
+          "borrowedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "returnedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  }
+}
