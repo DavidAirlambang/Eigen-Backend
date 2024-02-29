@@ -25,11 +25,15 @@ app.get("/", (req, res) => {
   res.json({ message: "Hello World" });
 });
 
-try {
-  app.listen(port, () => {
-    console.log(`server running on PORT ${port}...`);
-  });
-} catch (error) {
-  console.log(error);
-  process.exit(1);
+if (process.env.NODE_ENV !== "test") {
+  try {
+    app.listen(port, () => {
+      console.log(`server running on PORT ${port}...`);
+    });
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
 }
+
+export default app;
