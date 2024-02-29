@@ -1,6 +1,7 @@
 backendTest
 
 - npm i
+- npm run migrate
 - npm run populate
 - npm run start / npm run dev
 - test
