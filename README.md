@@ -7,3 +7,6 @@ backendTest
 
 npm run test
 dokumentasi di /api/v1/docs
+
+
+# Algoritma no 1 - 4 ada di folder algoritma
